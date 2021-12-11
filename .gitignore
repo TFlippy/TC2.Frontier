@@ -1,0 +1,11 @@
+.vs/
+.git/
+
+*.shproj
+*.csproj
+*.sln
+*.props
+
+[Bb]in/
+[Oo]bj/
+[Pp]roperties/

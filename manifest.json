@@ -1,0 +1,22 @@
+{
+  "version": "0.1.33.0",
+  "guid": "f7c1b854-642f-4257-9fd0-64ca0bdd1945",
+  "identifier": "TC2.Frontier",
+  "name": "Frontier",
+  "description": "A long-term gamemode.",
+  "url": "https://github.com/TFlippy/TC2.Frontier",
+  "git": "https://github.com/TFlippy/TC2.Frontier.git",
+  "authors": [
+    "TFlippy"
+  ],
+  "dependencies": [
+    {
+      "identifier": "TC2.Core",
+      "required": true
+    },
+    {
+      "identifier": "TC2.Base",
+      "required": true
+    }
+  ]
+}

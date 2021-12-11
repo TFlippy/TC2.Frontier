@@ -11,6 +11,8 @@
 			public float match_duration = 60.00f * 30.00f;
 			public float elapsed;
 
+			[Save.Ignore] public bool finished;
+
 			public static void Configure()
 			{
 
@@ -22,9 +24,64 @@
 			}
 
 			[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
-			public static void OnUpdate(ISystem.Info info, [Source.Global] ref Frontier.Gamemode frontier)
+			public static void OnUpdate(ISystem.Info info, [Source.Global] ref Frontier.Gamemode frontier, [Source.Global] in MapCycle.Global mapcycle, [Source.Global] ref MapCycle.Voting voting)
 			{
-				frontier.elapsed += info.DeltaTime;
+				if (frontier.elapsed < frontier.match_duration)
+				{
+					frontier.elapsed += info.DeltaTime;
+
+#if SERVER
+					frontier.finished = frontier.elapsed >= frontier.match_duration;
+					if (frontier.finished)
+					{
+						ref var world = ref Server.GetWorld();
+
+						var weights = new FixedArray16<float>();
+
+						ref var votes = ref voting.votes;
+						for (int i = 0; i < votes.Length; i++)
+						{
+							ref var vote = ref votes[i];
+							if (vote.player_id != 0)
+							{
+								weights[vote.map_index] += vote.weight;
+							}
+						}
+
+						var top_index = -1;
+						var top_weight = 0.00f;
+
+						for (int i = 0; i < weights.Length; i++)
+						{
+							var weight = weights[i];
+							if (weight > top_weight)
+							{
+								top_weight = weight;
+								top_index = i;
+							}
+						}
+
+						if (top_index != -1)
+						{
+							var map_name = mapcycle.maps[top_index];
+
+							voting.votes = default;
+							frontier.elapsed = 0.00f;
+
+							world.SetNextMap(map_name);
+
+							world.Save();
+							world.SaveRegion(ref info.GetRegion());
+
+
+							App.WriteLine($"finished ({map_name})");
+							App.Quit();
+							//App.Restart();
+
+						}
+					}
+#endif
+				}
 			}
 		}
 

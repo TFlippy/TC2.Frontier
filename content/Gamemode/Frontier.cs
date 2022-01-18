@@ -232,7 +232,7 @@
 								GUI.Title($"{game_info.name}", size: 32);
 								//GUI.OffsetLine(GUI.GetRemainingWidth() - 260);
 								GUI.SameLine();
-								GUI.TitleCentered($"Time Left: {GUI.FormatTime(MathF.Max(0.00f, this.gamemode.match_duration - this.gamemode.elapsed))}", size: 24, pivot: new Vector2(1, 1));
+								GUI.TitleCentered($"Next map in: {GUI.FormatTime(MathF.Max(0.00f, this.gamemode.match_duration - this.gamemode.elapsed))}", size: 24, pivot: new Vector2(1, 1));
 							}
 
 							GUI.SeparatorThick();
@@ -374,14 +374,16 @@
 													{
 														var is_online = player.flags.HasAny(Player.Flags.Online);
 
+														var alpha = is_online ? 1.00f : 0.50f;
+
 														using (row.Column(0))
 														{
-															GUI.Text(player.GetName());
+															GUI.Text(player.GetName(), color: GUI.font_color_default.WithAlphaMult(alpha));
 														}
 
 														using (row.Column(1))
 														{
-															GUI.Title(faction.name, color: faction.color_a);
+															GUI.Title(faction.name, color: faction.color_a.WithAlphaMult(alpha));
 														}
 
 														ref var money = ref player.GetMoneyReadOnly().Value;
@@ -389,13 +391,13 @@
 														{
 															using (row.Column(2))
 															{
-																GUI.Text($"{money.amount:0}");
+																GUI.Text($"{money.amount:0}", color: GUI.font_color_default.WithAlphaMult(alpha));
 															}
 														}
 
 														using (row.Column(3))
 														{
-															GUI.Text(is_online ? "Online" : "Offline");
+															GUI.Text(is_online ? "Online" : "Offline", color: GUI.font_color_default.WithAlphaMult(alpha));
 														}
 
 
@@ -414,9 +416,9 @@
 														//	}
 														//}
 
-														var selected = false;
 														GUI.SameLine();
-														GUI.Selectable("", ref selected, play_sound: false, enabled: false, size: new Vector2(0, 0));
+														//GUI.Selectable("", ref selected, play_sound: false, enabled: false, size: new Vector2(0, 0));
+														GUI.Selectable2(false, play_sound: false, enabled: false, size: new Vector2(0, 0), is_readonly: true);
 													}
 												}
 											}
@@ -546,7 +548,10 @@
 					ScoreboardGUI.show = !ScoreboardGUI.show;
 				}
 
-				if (ScoreboardGUI.show)
+				Spawn.RespawnGUI.window_offset = new Vector2(100, 120);
+				Spawn.RespawnGUI.window_pivot = new Vector2(0, 0);
+
+				if (ScoreboardGUI.show || !player.flags.HasAll(Player.Flags.Alive))
 				{
 					var gui = new ScoreboardGUI()
 					{

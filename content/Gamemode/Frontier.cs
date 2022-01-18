@@ -341,22 +341,22 @@
 								//	}
 								//}
 
-								using (var table = GUI.Table.New("Players", 5, size: new Vector2(0, 80)))
+								using (var table = GUI.Table.New("Players", 3, size: new Vector2(0, 80)))
 								{
 									if (table.show)
 									{
 										table.SetupColumnFlex(1);
-										table.SetupColumnFlex(1);
+										table.SetupColumnFixed(128);
 										table.SetupColumnFixed(64);
-										table.SetupColumnFixed(64);
-										table.SetupColumnFixed(64);
+										//table.SetupColumnFixed(64);
+										//table.SetupColumnFixed(64);
 
 										using (var row = GUI.Table.Row.New(size: new(GUI.GetRemainingWidth(), 16), header: true))
 										{
 											using (row.Column(0)) GUI.Title("Name", size: 20);
 											using (row.Column(1)) GUI.Title("Faction", size: 20);
-											using (row.Column(2)) GUI.Title("Money", size: 20);
-											using (row.Column(3)) GUI.Title("Status", size: 20);
+											//using (row.Column(2)) GUI.Title("Money", size: 20);
+											using (row.Column(2)) GUI.Title("Status", size: 20);
 											//using (row.Column(4)) GUI.Title("Deaths");
 										}
 
@@ -386,16 +386,16 @@
 															GUI.Title(faction.name, color: faction.color_a.WithAlphaMult(alpha));
 														}
 
-														ref var money = ref player.GetMoneyReadOnly().Value;
-														if (!money.IsNull())
-														{
-															using (row.Column(2))
-															{
-																GUI.Text($"{money.amount:0}", color: GUI.font_color_default.WithAlphaMult(alpha));
-															}
-														}
+														//ref var money = ref player.GetMoneyReadOnly().Value;
+														//if (!money.IsNull())
+														//{
+														//	using (row.Column(2))
+														//	{
+														//		GUI.Text($"{money.amount:0}", color: GUI.font_color_default.WithAlphaMult(alpha));
+														//	}
+														//}
 
-														using (row.Column(3))
+														using (row.Column(2))
 														{
 															GUI.Text(is_online ? "Online" : "Offline", color: GUI.font_color_default.WithAlphaMult(alpha));
 														}

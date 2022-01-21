@@ -224,7 +224,7 @@
 							GUI.DrawWindowBackground("ui_scoreboard_bg", new Vector4(8, 8, 8, 8));
 						}
 
-						using (GUI.Group.New(size: new Vector2(GUI.GetAvailableWidth(), 0), padding: new(14, 12)))
+						using (GUI.Group.New(size: GUI.GetAvailableSize(), padding: new(14, 12)))
 						{
 							//GUI.Title($"Scoreboard - {world.name} - Deathmatch", size: 32);
 							using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), 32)))
@@ -322,7 +322,7 @@
 
 							GUI.NewLine(4);
 
-							using (GUI.Group.New(padding: new Vector2(4, 4)))
+							using (GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new Vector2(4, 4)))
 							{
 								//region.Query<Region.GetFactionsQuery>(Func).Execute(ref this);
 								//static void Func(ISystem.Info info, Entity entity, in Faction.Data faction)
@@ -341,7 +341,7 @@
 								//	}
 								//}
 
-								using (var table = GUI.Table.New("Players", 3, size: new Vector2(0, 80)))
+								using (var table = GUI.Table.New("Players", 3, size: new Vector2(0, GUI.GetRemainingHeight())))
 								{
 									if (table.show)
 									{
@@ -359,8 +359,6 @@
 											using (row.Column(2)) GUI.Title("Status", size: 20);
 											//using (row.Column(4)) GUI.Title("Deaths");
 										}
-
-
 
 										region.Query<Region.GetPlayersQuery>(Func).Execute(ref this);
 										static void Func(ISystem.Info info, Entity entity, in Player.Data player, in Faction.Data faction)
@@ -425,116 +423,11 @@
 										}
 									}
 								}
-
-
-
-								//GUI.NewLine(16);
-
-								//using (GUI.Group.New(padding: new Vector2(0, 0)))
-								//{
-								//	DrawFaction(ref region, ref this.player, ref faction_b, ref this);
-								//}
 							}
 						}
 					}
 				}
 			}
-
-			private static void DrawFaction(ref Region.Data region, ref Player.Data player, ref Faction.Data faction, ref ScoreboardGUI gui)
-			{
-				using (GUI.ID.Push(faction.ent_faction))
-				{
-					var color = Color32BGRA.Lerp(faction.color_a, 0xffffffff, 0.20f);
-
-					GUI.Title(faction.name, size: 32, color: color);
-					GUI.OffsetLine(GUI.GetRemainingWidth() - 80);
-					if (GUI.DrawButton("Join", new Vector2(80, 32), enabled: faction.id != gui.player.faction_id && !player.flags.HasAny(Player.Flags.Alive)))
-					{
-
-					}
-
-					GUI.NewLine(2);
-					GUI.Separator();
-					GUI.NewLine(2);
-
-					using (var table = GUI.Table.New(faction.name, 5, size: new Vector2(0, 80)))
-					{
-						if (table.show)
-						{
-							table.SetupColumnFlex(1);
-							table.SetupColumnFixed(64);
-							table.SetupColumnFixed(64);
-							table.SetupColumnFixed(64);
-							table.SetupColumnFixed(64);
-
-							using (var row = GUI.Table.Row.New(size: new(GUI.GetRemainingWidth(), 16), header: true))
-							{
-								using (row.Column(0)) GUI.Title("Name");
-								using (row.Column(1)) GUI.Title("Money");
-								using (row.Column(2)) GUI.Title("Status");
-								using (row.Column(3)) GUI.Title("Kills");
-								using (row.Column(4)) GUI.Title("Deaths");
-							}
-
-							region.Query<Region.GetPlayersQuery>(Func).Execute(ref faction);
-							static void Func(ISystem.Info info, Entity entity, in Player.Data player, in Faction.Data faction)
-							{
-								ref var arg = ref info.GetParameter<Faction.Data>();
-								if (!arg.IsNull() && player.faction_id == arg.id)
-								{
-									using (var row = GUI.Table.Row.New(size: new(GUI.GetRemainingWidth(), 20)))
-									{
-										using (GUI.ID.Push(entity))
-										{
-											using (row.Column(0))
-											{
-												GUI.Text(player.GetName());
-											}
-
-											ref var money = ref player.GetMoneyReadOnly().Value;
-											if (!money.IsNull())
-											{
-												using (row.Column(1))
-												{
-													GUI.Text($"{money.amount:0}");
-												}
-											}
-
-											using (row.Column(2))
-											{
-												GUI.Text(player.flags.HasAny(Player.Flags.Alive) ? "Alive" : "Dead");
-											}
-
-											//ref var score = ref entity.GetComponent<Score.Data>();
-											//if (!score.IsNull())
-											//{
-											//	using (row.Column(3))
-											//	{
-											//		GUI.Text($"{score.kills}");
-											//	}
-
-											//	using (row.Column(4))
-											//	{
-											//		GUI.Text($"{score.deaths}");
-											//	}
-											//}
-
-											var selected = false;
-											GUI.SameLine();
-											GUI.Selectable("", ref selected, play_sound: false, size: new Vector2(0, 0));
-										}
-									}
-								}
-							}
-						}
-					}
-
-
-				}
-			}
-
-
-
 		}
 
 		[ISystem.EarlyGUI(ISystem.Mode.Single)]
@@ -551,7 +444,7 @@
 				Spawn.RespawnGUI.window_offset = new Vector2(100, 120);
 				Spawn.RespawnGUI.window_pivot = new Vector2(0, 0);
 
-				if (ScoreboardGUI.show || !player.flags.HasAll(Player.Flags.Alive))
+				if (ScoreboardGUI.show || (!player.flags.HasAny(Player.Flags.Alive | Player.Flags.Editor)))
 				{
 					var gui = new ScoreboardGUI()
 					{

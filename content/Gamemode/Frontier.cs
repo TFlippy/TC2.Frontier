@@ -8,7 +8,7 @@
 			/// <summary>
 			/// Match duration in seconds.
 			/// </summary>
-			public float match_duration = 60.00f * 60.00f * 8.00f;
+			public float match_duration = 60.00f * 60.00f * 16.00f;
 			public float elapsed;
 
 			[Save.Ignore] public bool finished;
@@ -22,63 +22,108 @@
 			{
 				App.WriteLine("Gamemode Init!", App.Color.Magenta);
 			}
-
-			[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
-			public static void OnUpdate(ISystem.Info info, [Source.Global] ref Frontier.Gamemode frontier, [Source.Global] in MapCycle.Global mapcycle, [Source.Global] ref MapCycle.Voting voting)
-			{
-				if (frontier.elapsed < frontier.match_duration)
-				{
-					frontier.elapsed += info.DeltaTime;
+		}
 
 #if SERVER
-					frontier.finished = frontier.elapsed >= frontier.match_duration;
-					if (frontier.finished)
+		[ChatCommand.Region("nextmap", "", creative: true)]
+		public static void NextMapCommand(ref ChatCommand.Context context, string map)
+		{
+			Frontier.ChangeMap(map);
+		}
+
+		public static void ChangeMap(Map.Handle map)
+		{
+			ref var world = ref Server.GetWorld();
+
+			ref var region = ref world.GetAnyRegion();
+			if (!region.IsNull())
+			{
+				var region_id_old = region.GetID();
+
+				if (world.TryGetFirstAvailableRegionID(out var region_id_new))
+				{
+					world.Save().ContinueWith(() =>
 					{
 						ref var world = ref Server.GetWorld();
-
-						var weights = new FixedArray16<float>();
-
-						ref var votes = ref voting.votes;
-						for (int i = 0; i < votes.Length; i++)
+						world.UnloadRegion(region_id_old).ContinueWith(() =>
 						{
-							ref var vote = ref votes[i];
-							if (vote.player_id != 0)
+							ref var world = ref Server.GetWorld();
+
+							ref var region_new = ref world.ImportRegion(region_id_new, map);
+							if (!region_new.IsNull())
 							{
-								weights[vote.map_index] += vote.weight;
+								region_new.Wait().ContinueWith(() =>
+								{
+									Net.SetActiveRegionForAllPlayers(region_id_new);
+								});
+								//Net.SetActiveRegionForAllPlayers(region_id_new);
 							}
-						}
+						});
+					});
 
-						var top_index = 0;
-						var top_weight = 0.00f;
+			
+				}
+			}
+		}
+#endif
 
-						for (int i = 0; i < weights.Length; i++)
+		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
+		public static void OnUpdate(ISystem.Info info, [Source.Global] ref Frontier.Gamemode frontier, [Source.Global] in MapCycle.Global mapcycle, [Source.Global] ref MapCycle.Voting voting)
+		{
+			if (frontier.elapsed < frontier.match_duration)
+			{
+				frontier.elapsed += info.DeltaTime;
+
+#if SERVER
+				frontier.finished = frontier.elapsed >= frontier.match_duration;
+				if (frontier.finished)
+				{
+					ref var world = ref Server.GetWorld();
+
+					var weights = new FixedArray16<float>();
+
+					ref var votes = ref voting.votes;
+					for (int i = 0; i < votes.Length; i++)
+					{
+						ref var vote = ref votes[i];
+						if (vote.player_id != 0)
 						{
-							var weight = weights[i];
-							if (weight > top_weight)
-							{
-								top_weight = weight;
-								top_index = i;
-							}
-						}
-
-						if (top_index != -1)
-						{
-							var map_name = mapcycle.maps[top_index];
-
-							voting.votes = default;
-							frontier.elapsed = 0.00f;
-
-							world.SetNextMap(map_name);
-							world.Save();
-							//world.SaveRegion(ref info.GetRegion());
-
-							App.WriteLine($"finished ({map_name})");
-							App.Quit();
-							//App.Restart();
+							weights[vote.map_index] += vote.weight;
 						}
 					}
-#endif
+
+					var top_index = 0;
+					var top_weight = 0.00f;
+
+					for (int i = 0; i < weights.Length; i++)
+					{
+						var weight = weights[i];
+						if (weight > top_weight)
+						{
+							top_weight = weight;
+							top_index = i;
+						}
+					}
+
+					if (top_index != -1)
+					{
+						var map_name = mapcycle.maps[top_index];
+
+						voting.votes = default;
+						frontier.elapsed = 0.00f;
+
+						Frontier.ChangeMap(map_name.ToString());
+
+						//world.SetNextMap(map_name);
+						//world.SaveAndQuit();
+						//world.SaveRegion(ref info.GetRegion());
+
+						//App.WriteLine($"finished ({map_name})");
+						//App.Quit();
+						//App.Restart();
+					}
 				}
+#endif
 			}
 		}
 

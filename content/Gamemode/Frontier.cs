@@ -9,9 +9,14 @@
 			/// Match duration in seconds.
 			/// </summary>
 			public float match_duration = 60.00f * 60.00f * 16.00f;
-			public float elapsed;
+			public float elapsed = default;
 
-			[Save.Ignore] public bool finished;
+			[Save.Ignore] public bool finished = default;
+
+			public Gamemode()
+			{
+
+			}
 
 			public static void Configure()
 			{
@@ -28,14 +33,30 @@
 		[ChatCommand.Region("nextmap", "", creative: true)]
 		public static void NextMapCommand(ref ChatCommand.Context context, string map)
 		{
-			Frontier.ChangeMap(map);
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				var map_handle = new Map.Handle(map);
+				if (map_handle.id != 0)
+				{
+					Frontier.ChangeMap(ref region, map_handle);
+				}
+				else
+				{
+					ref var frontier = ref region.GetSingletonComponent<Frontier.Gamemode>();
+					if (!frontier.IsNull())
+					{
+						frontier.elapsed = frontier.match_duration - 0.10f; // TODO: hack
+					}
+				}
+			}
 		}
 
-		public static void ChangeMap(Map.Handle map)
+		public static void ChangeMap(ref Region.Data region, Map.Handle map)
 		{
 			ref var world = ref Server.GetWorld();
 
-			ref var region = ref world.GetAnyRegion();
+			//ref var region = ref world.GetAnyRegion();
 			if (!region.IsNull())
 			{
 				var region_id_old = region.GetID();
@@ -61,6 +82,15 @@
 					});	
 				}
 			}
+		}
+#endif
+
+#if SERVER
+		[ISystem.AddFirst(ISystem.Mode.Single)]
+		public static void OnAdd(ISystem.Info info, [Source.Owned] ref MapCycle.Global mapcycle)
+		{
+			ref var region = ref info.GetRegion();
+			mapcycle.AddMaps(ref region, "frontier");
 		}
 #endif
 
@@ -109,21 +139,12 @@
 						voting.votes = default;
 						frontier.elapsed = 0.00f;
 
-						Frontier.ChangeMap(map_name.ToString());
+						Frontier.ChangeMap(ref info.GetRegion(), map_name.ToString());
 					}
 				}
 #endif
 			}
 		}
-
-#if SERVER
-		[ISystem.Add(ISystem.Mode.Single)]
-		public static void OnAdd(ISystem.Info info, [Source.Owned] ref MapCycle.Global mapcycle)
-		{
-			ref var region = ref info.GetRegion();
-			mapcycle.AddMaps(ref region, "frontier");
-		}
-#endif
 
 #if CLIENT
 		public struct ScoreboardGUI: IGUICommand

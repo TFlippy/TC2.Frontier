@@ -73,6 +73,8 @@
 							ref var region_new = ref world.ImportRegion(region_id_new, map);
 							if (!region_new.IsNull())
 							{
+								world.SetContinueRegionID(region_id_new);
+
 								region_new.Wait().ContinueWith(() =>
 								{
 									Net.SetActiveRegionForAllPlayers(region_id_new);
@@ -162,7 +164,7 @@
 				var lh = 32;
 				//App.WriteLine(alive);
 
-				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(100, 100);
+				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(100, 48);
 				using (var window = GUI.Window.Standalone("Scoreboard", position: alive ? null : window_pos, size: new Vector2(700, 400), pivot: alive ? new Vector2(0.50f, 0.00f) : new(1.00f, 0.00f)))
 				{
 					this.StoreCurrentWindowTypeID();
@@ -370,7 +372,7 @@
 					ScoreboardGUI.show = !ScoreboardGUI.show;
 				}
 
-				Spawn.RespawnGUI.window_offset = new Vector2(100, 120);
+				Spawn.RespawnGUI.window_offset = new Vector2(100, 90);
 				Spawn.RespawnGUI.window_pivot = new Vector2(0, 0);
 
 				if (ScoreboardGUI.show || (!player.flags.HasAny(Player.Flags.Alive | Player.Flags.Editor)))

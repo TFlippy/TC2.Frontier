@@ -5,6 +5,14 @@
 		[IGamemode.Data("Frontier", "")]
 		public partial struct Gamemode: IGamemode
 		{
+			[Flags]
+			public enum Flags: uint
+			{
+				None = 0,
+			
+				
+			}
+
 			/// <summary>
 			/// Match duration in seconds.
 			/// </summary>

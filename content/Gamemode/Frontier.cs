@@ -319,6 +319,9 @@
 										region.Query<Region.GetPlayersQuery>(Func).Execute(ref this);
 										static void Func(ISystem.Info info, Entity entity, in Player.Data player, in Faction.Data faction)
 										{
+											var is_online = player.flags.HasAny(Player.Flags.Online);
+											if (!is_online) return;
+
 											ref var arg = ref info.GetParameter<ScoreboardGUI>();
 											if (!arg.IsNull())
 											{
@@ -326,8 +329,6 @@
 												{
 													using (GUI.ID.Push(entity))
 													{
-														var is_online = player.flags.HasAny(Player.Flags.Online);
-
 														var alpha = is_online ? 1.00f : 0.50f;
 
 														using (row.Column(0))

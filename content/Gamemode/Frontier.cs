@@ -16,7 +16,7 @@
 			/// <summary>
 			/// Match duration in seconds.
 			/// </summary>
-			public float match_duration = 60.00f * 60.00f * 16.00f;
+			public float match_duration = 60.00f * 60.00f * 10.00f;
 			public float elapsed = default;
 
 			[Save.Ignore] public bool finished = default;
@@ -317,7 +317,7 @@
 										}
 
 										region.Query<Region.GetPlayersQuery>(Func).Execute(ref this);
-										static void Func(ISystem.Info info, Entity entity, in Player.Data player, in Faction.Data faction)
+										static void Func(ISystem.Info info, Entity entity, in Player.Data player)
 										{
 											var is_online = player.flags.HasAny(Player.Flags.Online);
 											if (!is_online) return;
@@ -338,7 +338,10 @@
 
 														using (row.Column(1))
 														{
-															GUI.Title(faction.name, color: faction.color_a.WithAlphaMult(alpha));
+															if (player.faction_id.TryGetData(out var ref_faction))
+															{
+																GUI.Title(ref_faction.value.name, color: ref_faction.value.color_a.WithAlphaMult(alpha));
+															}
 														}
 
 														//ref var money = ref player.GetMoneyReadOnly().Value;

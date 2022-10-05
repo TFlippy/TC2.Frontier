@@ -12,7 +12,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Lost Documents"
 		items:
 		[
@@ -20,13 +19,8 @@
 				type: resource
 				material: "paper"
 				quantity: 20.000
-				mass_per_unit: 0.020
 			}
-			null
-			null
-			null
 		]
-		flags: dirty, unpack
-		mass: 0.000
+		flags: unpack
 	}
 }

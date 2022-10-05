@@ -7,12 +7,10 @@
 	
 	flags: none
 	character_flags: human, construction, laborer
-	origin: "null"
 	cost: 1.000
 	
 	shipment:
 	{
-		id: 0
 		name: "Construction Materials"
 		items:
 		[
@@ -20,18 +18,13 @@
 				type: resource
 				material: "wood"
 				quantity: 500.000
-				mass_per_unit: 0.060
 			}
 			{
 				type: resource
 				material: "stone"
 				quantity: 150.000
-				mass_per_unit: 1.500
 			}
-			null
-			null
 		]
-		flags: dirty, unpack
-		mass: 0.000
+		flags: unpack
 	}
 }

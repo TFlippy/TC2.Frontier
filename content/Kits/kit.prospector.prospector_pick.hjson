@@ -12,7 +12,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Prospector Pick"
 		items:
 		[
@@ -20,13 +19,8 @@
 				type: prefab
 				prefab: "prospector_pick"
 				quantity: 1.000
-				mass_per_unit: 5.000
 			}
-			null
-			null
-			null
 		]
-		flags: dirty, unpack
-		mass: 0.000
+		flags: unpack
 	}
 }

@@ -12,7 +12,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Surgical Tools"
 		items:
 		[
@@ -20,23 +19,18 @@
 				type: prefab
 				prefab: "knife"
 				quantity: 1.000
-				mass_per_unit: 2.000
 			}
 			{
 				type: prefab
 				prefab: "medkit"
 				quantity: 1.000
-				mass_per_unit: 2.000
 			}
 			{
 				type: resource
 				material: "alcohol"
 				quantity: 5.000
-				mass_per_unit: 0.100
 			}
-			null
 		]
-		flags: dirty, unpack
-		mass: 0.000
+		flags: unpack
 	}
 }

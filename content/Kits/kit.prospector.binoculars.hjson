@@ -1,0 +1,32 @@
+{
+	name: "Binoculars"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	flags: none
+	character_flags: human
+	origin: "prospector"
+	cost: 1.500
+	
+	shipment:
+	{
+		id: 0
+		name: "Binoculars"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "binoculars"
+				quantity: 1.000
+				mass_per_unit: 2.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

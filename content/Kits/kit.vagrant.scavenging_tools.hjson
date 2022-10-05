@@ -1,0 +1,32 @@
+{
+	name: "Scavenging Tools"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	flags: none
+	character_flags: human
+	origin: "vagrant"
+	cost: 1.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Scavenging Tools"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "crowbar"
+				quantity: 1.000
+				mass_per_unit: 4.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

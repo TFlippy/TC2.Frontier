@@ -1,0 +1,37 @@
+{
+	name: "Chemical Goods"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	flags: none
+	character_flags: human
+	origin: "chemist"
+	cost: 3.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Chemical Goods"
+		items:
+		[
+			{
+				type: resource
+				material: "alcohol"
+				quantity: 15.000
+				mass_per_unit: 0.100
+			}
+			{
+				type: resource
+				material: "sulfuric_acid"
+				quantity: 25.000
+				mass_per_unit: 0.100
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

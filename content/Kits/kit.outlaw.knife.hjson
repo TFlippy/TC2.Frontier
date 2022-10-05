@@ -1,0 +1,32 @@
+{
+	name: "Threatening Knife"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	flags: none
+	character_flags: human
+	origin: "outlaw"
+	cost: 2.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Threatening Knife"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "knife"
+				quantity: 1.000
+				mass_per_unit: 2.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

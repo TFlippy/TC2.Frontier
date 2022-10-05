@@ -1,0 +1,32 @@
+{
+	name: "Trusty Companion"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	flags: none
+	character_flags: human
+	origin: "vagrant"
+	cost: 4.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Trusty Companion"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "badger"
+				quantity: 1.000
+				mass_per_unit: 25.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty
+		mass: 0.000
+	}
+}

@@ -91,7 +91,7 @@
 			scale: [-1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [240.000, 50.000]
 			rotation: 0.000
 			scale: [1.000, 1.000]

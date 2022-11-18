@@ -3287,13 +3287,13 @@
 			color: "0xffffffff"
 		}
 		{
-			prefab: "soundscape.city.day.00"
+			prefab: "biome.city.00"
 			position: [695.5593, 53.31932]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [561.423, 54.59015]
 			rotation: 0.000
 			scale: [1.000, 1.000]

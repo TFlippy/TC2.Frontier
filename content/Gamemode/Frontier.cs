@@ -9,17 +9,20 @@
 			public enum Flags: uint
 			{
 				None = 0,
-			
-				
+
+				Active = 1 << 0,
+				Paused = 1 << 1
 			}
 
 			/// <summary>
 			/// Match duration in seconds.
 			/// </summary>
 			public float match_duration = 60.00f * 60.00f * 10.00f;
-			public float elapsed = default;
+			public float elapsed;
 
-			[Save.Ignore] public bool finished = default;
+			public Frontier.Gamemode.Flags flags;
+
+			[Save.Ignore] public bool finished;
 
 			public Gamemode()
 			{
@@ -38,6 +41,27 @@
 		}
 
 #if SERVER
+		[ChatCommand.Region("pause", "", admin: true)]
+		public static void PauseCommand(ref ChatCommand.Context context, bool? value = null)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var g_frontier = ref region.GetSingletonComponent<Frontier.Gamemode>();
+				if (!g_frontier.IsNull())
+				{
+					var sync = false;
+					sync |= g_frontier.flags.TrySetFlag(Frontier.Gamemode.Flags.Paused, value ?? !g_frontier.flags.HasAll(Frontier.Gamemode.Flags.Paused));
+					Server.SendChatMessage(g_frontier.flags.HasAll(Frontier.Gamemode.Flags.Paused) ? "Paused Frontier." : "Unpaused Frontier.", channel: Chat.Channel.System);
+
+					if (sync)
+					{
+						region.SyncGlobal(ref g_frontier);
+					}
+				}
+			}
+		}
+
 		[ChatCommand.Region("nextmap", "", creative: true)]
 		public static void NextMapCommand(ref ChatCommand.Context context, string map)
 		{
@@ -109,7 +133,10 @@
 		{
 			if (frontier.elapsed < frontier.match_duration)
 			{
-				frontier.elapsed += info.DeltaTime;
+				if (!frontier.flags.HasAny(Frontier.Gamemode.Flags.Paused))
+				{
+					frontier.elapsed += info.DeltaTime;
+				}
 
 #if SERVER
 				frontier.finished = frontier.elapsed >= frontier.match_duration;
@@ -387,7 +414,7 @@
 				Spawn.RespawnGUI.window_offset = new Vector2(100, 90);
 				Spawn.RespawnGUI.window_pivot = new Vector2(0, 0);
 
-				if (ScoreboardGUI.show || (!player.flags.HasAny(Player.Flags.Alive | Player.Flags.Editor)))
+				if (ScoreboardGUI.show || (!player.flags.HasAny(Player.Flags.Alive) && Editor.show_respawn_menu))
 				{
 					var gui = new ScoreboardGUI()
 					{

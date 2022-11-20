@@ -1,10 +1,20 @@
 .vs/
+.vscode/
 .git/
 
 *.shproj
 *.csproj
+*.csproj.user
 *.sln
 *.props
+
+*.sfk
+*.sfl
+*.ase
+*.aseprite
+*.psd
+
+projects.json
 
 [Bb]in/
 [Oo]bj/

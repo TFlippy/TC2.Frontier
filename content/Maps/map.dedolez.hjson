@@ -2612,7 +2612,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "pallet.ingot.iron.wreck.00"
+			prefab: "pallet.ingot.steel.wreck.00"
 			position: [438.9476, 59.43908]
 			rotation: 0.082452
 			scale: [1.000, 1.000]
@@ -2624,7 +2624,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "pallet.ingot.iron.wreck.00"
+			prefab: "pallet.ingot.steel.wreck.00"
 			position: [544.0146, 59.56018]
 			rotation: 0.033761
 			scale: [1.000, 1.000]

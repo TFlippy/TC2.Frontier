@@ -230,7 +230,7 @@
 								using (GUI.Group.New(size: new(GUI.GetRemainingWidth() * 0.50f, 0), padding: new Vector2(8, 4)))
 								{
 									GUI.Label("Players:", $"{game_info.player_count}/{game_info.player_count_max}", font: GUI.Font.Superstar, size: 16);
-									GUI.Label("Map:", game_info.map, font: GUI.Font.Superstar, size: 16);
+									//GUI.Label("Map:", game_info.map, font: GUI.Font.Superstar, size: 16);
 									GUI.Label("Gamemode:", $"{game_info.gamemode}", font: GUI.Font.Superstar, size: 16);
 								}
 

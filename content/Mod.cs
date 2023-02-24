@@ -12,11 +12,6 @@ namespace TC2.Frontier
 		{
 			
 		}
-
-		protected override void OnConfigure(ModContext context)
-		{
-
-		}
 	}
 }
 
